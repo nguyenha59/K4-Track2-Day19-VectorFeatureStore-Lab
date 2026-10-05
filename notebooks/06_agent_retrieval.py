@@ -123,6 +123,28 @@ print(f"\nΔ recall vs single-shot:  tách câu {split - base:+.3f}   tách + fi
 # NB5 lặp lại ở tầng agent: **filter không miễn phí, phải đo chứ đừng đoán.**
 
 # %% [markdown]
+# ### Nhận xét của tôi: vì sao `agentic (+filter)` thấp hơn `agentic (no filter)`
+#
+# Cả ba chiến lược cùng lấy về 16 doc. Kết quả: single-shot recall 0.526 / balance
+# 0.08; tách câu không filter **0.906 / 0.93**; tách câu kèm filter 0.823 / 0.76.
+#
+# Bật filter mất khoảng 0.08 recall vì `topic` được **đoán từ keyword**
+# (`TOPIC_HINTS`, khớp theo chuỗi con). Mình so từng query: có đúng 2 query giảm
+# recall từ 1.00 xuống 0.50, và cả hai đều bị gán nhầm sang `ai_ml` do hint
+# `"ai"` khớp *bên trong từ khác*:
+#
+# - "circuit breaker tránh cascading f**ai**lure" bị gán `ai_ml`, trong khi gold
+#   thuộc `backend`.
+# - "xác thực h**ai** yếu tố cho người dùng" bị gán `ai_ml`, trong khi gold thuộc
+#   `security`.
+#
+# Filter sai loại toàn bộ doc đúng của vế đó, nên mất nửa recall. Bước reflection
+# không cứu được, vì nó chỉ thử lại khi có ít hơn 4 kết quả, mà cụm `ai_ml` vẫn
+# trả đủ 8 doc (chỉ là sai cụm). Cách sửa: khớp theo ranh giới từ (`\bai\b`) hoặc
+# để LLM chọn từ `enum`. Kết luận giống NB5: **filter là một giả định, phải đo
+# trên golden set trước khi bật mặc định.**
+
+# %% [markdown]
 # ## 4. Reflection: filter tồi còn tệ hơn không filter
 #
 # `Agent` thử lại **một lần** với filter được nới ra khi một call trả về quá ít

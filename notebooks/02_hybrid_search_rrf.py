@@ -190,6 +190,18 @@ for t in ("exact", "paraphrase", "mixed"):
 # production luôn default hybrid (deck §3, slide "Hybrid Search Mechanics").
 
 # %% [markdown]
+# ### Nhận xét của tôi (số đo thật, path lite)
+#
+# - Trung bình: hybrid **78.6%** > BM25 77.8% > vector 73.2%. Hybrid thắng cả hai.
+# - `exact`: BM25 = hybrid = 96.7%. Từ khoá nguyên văn đã đủ, RRF giữ nguyên được.
+# - `mixed`: hybrid **100%**, cao hơn cả hai mode đơn. Doc mà cả hai bộ xếp hạng
+#   cùng đẩy lên được cộng điểm từ hai phía.
+# - `paraphrase`: vector chỉ đạt **24%**, thấp hơn BM25 (33.3%), không thắng như
+#   kỳ vọng. Lý do là `bge-small-en` là model tiếng Anh, không hiểu câu tiếng Việt
+#   diễn đạt lại. Đây là giới hạn của việc chọn model, không phải lỗi RRF. Đổi
+#   `EMBEDDING_BACKEND=bge-m3` rồi index lại là bước tiếp theo để kiểm chứng.
+
+# %% [markdown]
 # ## Deliverable evidence
 #
 # 1. Output cell 4: bảng Precision@10 với 3 mode, hybrid > kw và > sem.

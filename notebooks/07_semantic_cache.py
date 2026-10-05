@@ -116,6 +116,24 @@ for th in (0.60, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95):
 # > hằng số để copy. Phân bố query của bạn quyết định con số cuối cùng.
 
 # %% [markdown]
+# ### Nhận xét của tôi: chọn ngưỡng **0.85** cho corpus này
+#
+# | ngưỡng | tiết kiệm | trả lời sai |
+# |---|---|---|
+# | 0.75 | 100% | **36%** |
+# | 0.80 | 100% | 5% |
+# | **0.85** | **100%** | **0%** |
+# | 0.90 | 96% | 0% |
+#
+# 0.75 chưa đủ: bảng cho thấy khoảng 31% số probe *không có* trong cache (36% trừ
+# 5%) vẫn có câu gần nhất với điểm 0.75–0.80. Corpus chỉ có 10 chủ đề với vốn từ
+# rất gần nhau, và `bge-small-en` không phân biệt tốt tiếng Việt. Vì vậy hai câu
+# hỏi khác nhau vẫn "trông giống" nhau, và cứ hơn một phần ba số lần trả lời là
+# trả lời cho câu hỏi khác. Ở 0.85, tỉ lệ sai về 0% mà vẫn giữ trọn phần tiết kiệm; 0.90 an
+# toàn hơn nhưng bắt đầu mất phần tiết kiệm. Mình chọn 0.85, kèm điều kiện phải
+# quét lại ngưỡng mỗi khi đổi embedding model hoặc khi phân bố query thay đổi.
+
+# %% [markdown]
 # ## 3. TTL: câu trả lời cũ không tự biết mình cũ
 #
 # `SemanticCache` dùng **đồng hồ ảo** (`advance()`) nên ta test được TTL mà không
