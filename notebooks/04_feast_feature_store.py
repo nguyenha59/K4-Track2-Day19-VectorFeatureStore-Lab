@@ -183,9 +183,12 @@ else:
 
 # %%
 import pandas as pd
+# Profile của u_00i được ghi lúc NOW - i giờ. Mỗi event phải nằm SAU thời điểm
+# đó thì PIT join mới có giá trị để trả; ví dụ u_001 @ NOW-2h sẽ đứng trước
+# profile (NOW-1h) → không có feature hợp lệ → Feast bỏ luôn dòng đó.
 entity_df = pd.DataFrame({
     "user_id": ["u_001", "u_002", "u_003"],
-    "event_timestamp": [NOW - timedelta(hours=2), NOW - timedelta(hours=1), NOW],
+    "event_timestamp": [NOW - timedelta(minutes=30), NOW - timedelta(hours=1), NOW],
 })
 
 historical = fs.get_historical_features(
@@ -196,6 +199,7 @@ historical = fs.get_historical_features(
     ],
 ).to_df()
 print(historical)
+print(f"\nshape: {historical.shape[0]} rows × {historical.shape[1]} columns")
 
 # %% [markdown]
 # ## Deliverable evidence
